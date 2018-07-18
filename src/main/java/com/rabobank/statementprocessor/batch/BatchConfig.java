@@ -38,9 +38,6 @@ public class BatchConfig {
 	@Value("${filepath}")
 	String filepath;
 
-	@Value("${expRecordsCount}")
-	int expRecordsCount;
-
 	@SuppressWarnings("unused")
 	@Bean
 	public Job readFilesJob() {
@@ -63,14 +60,14 @@ public class BatchConfig {
 	@Bean
 	public Step step1() {
 		return stepBuilderFactory.get("step1")
-				.<CustomerRecord, CustomerRecord> chunk(expRecordsCount)
-				.reader(reader()).writer(writer()).build();
+				.<CustomerRecord, CustomerRecord> chunk(20).reader(reader())
+				.writer(writer()).build();
 	}
 
 	@Bean
 	public Step step2() {
 		return stepBuilderFactory.get("step2")
-				.<CustomerRecords, CustomerRecords> chunk(expRecordsCount)
+				.<CustomerRecords, CustomerRecords> chunk(20)
 				.reader(xmlFileItemReader()).writer(writerForCollection())
 				.build();
 	}
