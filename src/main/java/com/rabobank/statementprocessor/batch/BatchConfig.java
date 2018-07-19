@@ -2,6 +2,8 @@ package com.rabobank.statementprocessor.batch;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -14,15 +16,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.rabobank.statementprocessor.common.ErrorMessages;
 import com.rabobank.statementprocessor.common.SupportedFileType;
 import com.rabobank.statementprocessor.entity.CustomerRecord;
 import com.rabobank.statementprocessor.entity.CustomerRecords;
+import com.rabobank.statementprocessor.exception.BusinessOperationException;
 import com.rabobank.statementprocessor.reader.FlatFileReader;
 import com.rabobank.statementprocessor.reader.XmlFileReader;
 
 @Configuration
 @EnableBatchProcessing
 public class BatchConfig {
+
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@Autowired
 	private JobBuilderFactory jobBuilderFactory;
 
@@ -32,12 +39,21 @@ public class BatchConfig {
 	@Value("${filepath}")
 	String filepath;
 
+	@Autowired
+	ErrorMessages errorMessages;
+
 	@SuppressWarnings("unused")
 	@Bean
-	public Job readFilesJob() {
+	public Job readFilesJob() throws BusinessOperationException {
 		JobBuilder builder = jobBuilderFactory.get("readFilesJob")
 				.incrementer(new RunIdIncrementer())
 				.listener(new BatchJobCompletionListener());
+
+		logger.info("<inputFilePath>" + filepath);
+		if (filepath == null || "".equals(filepath)) {
+			logger.error(errorMessages.getNoFilePath());
+			throw new BusinessOperationException(errorMessages.getNoFilePath());
+		}
 		File inputFile = new File(filepath);
 
 		if (inputFile.isFile()
@@ -48,8 +64,11 @@ public class BatchConfig {
 				&& inputFile.getName().endsWith(
 						SupportedFileType.XML.getFileType())) {
 			return builder.start(step2()).build();
+		} else {
+			logger.error(errorMessages.getIrrelevantFile());
+			throw new BusinessOperationException(
+					errorMessages.getIrrelevantFile());
 		}
-		return null;
 	}
 
 	@Bean

@@ -31,15 +31,18 @@ public class RabobankJobLauncherController {
 	@RequestMapping("/launchjob")
 	public String handle() throws Exception {
 
+		String msg = "No Job Done Yet";
 		try {
 			JobParameters jobParameters = new JobParametersBuilder().addLong(
 					"time", System.currentTimeMillis()).toJobParameters();
 			jobLauncher.run(job, jobParameters);
+			msg = "Job Done. Please check the results in console.";
 		} catch (Exception e) {
 			logger.error(e.getMessage());
+			msg = e.getMessage();
 		}
 
-		return "Congrats!! Job done successfully!.";
+		return msg;
 	}
 
 	@RequestMapping("/")
