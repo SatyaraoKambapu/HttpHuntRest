@@ -15,6 +15,8 @@ import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.xml.StaxEventItemReader;
+import org.springframework.batch.repeat.exception.DefaultExceptionHandler;
+import org.springframework.batch.repeat.exception.ExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +27,7 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import com.rabobank.statementprocessor.common.SupportedFileType;
 import com.rabobank.statementprocessor.entity.CustomerRecord;
 import com.rabobank.statementprocessor.entity.CustomerRecords;
+import com.rabobank.statementprocessor.exception.BusinessOperationException;
 
 @Configuration
 @EnableBatchProcessing
@@ -41,8 +44,9 @@ public class BatchConfig {
 	@SuppressWarnings("unused")
 	@Bean
 	public Job readFilesJob() {
-		JobBuilder builder = jobBuilderFactory.get("readFilesJob").incrementer(
-				new RunIdIncrementer());
+		JobBuilder builder = jobBuilderFactory.get("readFilesJob")
+				.incrementer(new RunIdIncrementer())
+				.listener(new BatchJobCompletionListener());
 		File inputFile = new File(filepath);
 
 		if (inputFile.isFile()
