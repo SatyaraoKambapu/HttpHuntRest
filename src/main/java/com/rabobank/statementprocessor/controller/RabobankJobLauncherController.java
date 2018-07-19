@@ -35,11 +35,10 @@ public class RabobankJobLauncherController {
 			JobParameters jobParameters = new JobParametersBuilder().addLong(
 					"time", System.currentTimeMillis()).toJobParameters();
 			jobLauncher.run(job, jobParameters);
-			logger.info("Congrats!!, Jobs are executed successfully!.");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
 
-		return "Congrats!!, Job done successfully!.";
+		return "Congrats!! Job done successfully!.";
 	}
 }
