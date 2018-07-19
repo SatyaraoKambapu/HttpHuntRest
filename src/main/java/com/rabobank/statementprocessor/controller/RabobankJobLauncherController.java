@@ -11,6 +11,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Job Launcher in Spring batch
+ * 
+ * @author skambapu
+ * 
+ */
 @RestController
 @EnableScheduling
 public class RabobankJobLauncherController {
@@ -20,14 +26,16 @@ public class RabobankJobLauncherController {
 	@Autowired
 	Job job;
 
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@RequestMapping("/launchjob")
 	public String handle() throws Exception {
 
-		Logger logger = LoggerFactory.getLogger(this.getClass());
 		try {
 			JobParameters jobParameters = new JobParametersBuilder().addLong(
 					"time", System.currentTimeMillis()).toJobParameters();
 			jobLauncher.run(job, jobParameters);
+			logger.info("Congrats!!, Jobs are executed successfully!.");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}

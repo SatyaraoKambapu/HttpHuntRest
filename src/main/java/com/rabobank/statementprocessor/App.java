@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.batch.BatchAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 /**
- * Hello world!
+ * Entry point to generate the failed records from the input file .
  * 
  */
 @SpringBootApplication

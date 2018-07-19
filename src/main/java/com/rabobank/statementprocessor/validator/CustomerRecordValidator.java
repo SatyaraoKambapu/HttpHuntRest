@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.stereotype.Component;
+
 import com.rabobank.statementprocessor.entity.CustomerRecord;
 
 /**
@@ -14,6 +16,7 @@ import com.rabobank.statementprocessor.entity.CustomerRecord;
  * @author skambapu
  * 
  */
+@Component
 public class CustomerRecordValidator {
 
 	Set<CustomerRecord> invalidCustomerRecords = new HashSet<CustomerRecord>();
@@ -37,10 +40,7 @@ public class CustomerRecordValidator {
 
 	private void setInvalidRecords(CustomerRecord customerRecord,
 			boolean isValidRecordRefernce, boolean isValidRecordEndBalance) {
-		if (!isValidRecordRefernce) {
-			invalidCustomerRecords.add(customerRecord);
-		}
-		if (!isValidRecordEndBalance) {
+		if (!isValidRecordRefernce || !isValidRecordEndBalance) {
 			invalidCustomerRecords.add(customerRecord);
 		}
 	}

@@ -2,6 +2,9 @@ package com.rabobank.statementprocessor.reportgen;
 
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.rabobank.statementprocessor.entity.CustomerRecord;
 
 /**
@@ -13,6 +16,7 @@ import com.rabobank.statementprocessor.entity.CustomerRecord;
  */
 public class FailureRecordsReportGenerator {
 
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static FailureRecordsReportGenerator instance = null;
 
 	private FailureRecordsReportGenerator() {
@@ -33,7 +37,7 @@ public class FailureRecordsReportGenerator {
 	public void generateFailureRecordsReport(
 			Set<CustomerRecord> invalidCustomerRecords) {
 		if (invalidCustomerRecords.isEmpty()) {
-			System.out.println("Congrats!! No invalid records found.");
+			logger.info("Congrats!! No invalid records found.");
 			return;
 		}
 		// Print the list objects in tabular format.
