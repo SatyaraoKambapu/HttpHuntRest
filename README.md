@@ -8,3 +8,4 @@ Instructions to execute :
 2. run the "http://localhost:8081/launchjob/" on browser.
 3. Expect the results on console. 
 
+Generated logs can be found in the file :  "./statementprocessor/statementprocessor/src/main/resources/applogs/server.log".
