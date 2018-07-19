@@ -45,6 +45,18 @@
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.batch/spring-batch-test -->
+		<dependency>
+			<groupId>org.springframework.batch</groupId>
+			<artifactId>spring-batch-test</artifactId>
+			<version>4.0.1.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<pluginManagement><!-- lock down plugins versions to avoid using Maven 
