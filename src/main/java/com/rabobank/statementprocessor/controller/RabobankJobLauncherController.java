@@ -41,4 +41,9 @@ public class RabobankJobLauncherController {
 
 		return "Congrats!! Job done successfully!.";
 	}
+
+	@RequestMapping("/")
+	public String doBatchProcecss() throws Exception {
+		return handle();
+	}
 }
