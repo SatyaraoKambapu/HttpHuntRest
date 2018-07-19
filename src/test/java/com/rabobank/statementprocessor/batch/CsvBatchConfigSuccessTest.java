@@ -17,12 +17,12 @@ import com.rabobank.statementprocessor.validator.CustomerRecordValidator;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = { BatchConfig.class, ErrorMessages.class,
 		CustomerRecordValidator.class, JobLauncherTestUtils.class })
-public class BatchConfigSuccessTest {
+public class CsvBatchConfigSuccessTest {
 
 	@BeforeClass
 	public static void setUp() {
 		System.setProperty("filepath",
-				"C:\\Users\\skambapu\\Downloads\\assignment\\records.csv");
+				"./src/test/resources/records.csv");
 	}
 
 	@Autowired
