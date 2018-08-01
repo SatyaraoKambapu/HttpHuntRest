@@ -2,8 +2,8 @@ package com.thoughtworks.httphuntrest;
 
 public class HttpHuntReqSubStageIII {
 
-	String name;
-	int timeUsedInMinutes;
+	public String name;
+	public int timeUsedInMinutes;
 
 	public String getName() {
 		return name;
@@ -19,6 +19,12 @@ public class HttpHuntReqSubStageIII {
 
 	public void setTimeUsedInMinutes(int timeUsedInMinutes) {
 		this.timeUsedInMinutes = timeUsedInMinutes;
+	}
+
+	@Override
+	public String toString() {
+		return "HttpHuntReqSubStageIII [name=" + name + ", timeUsedInMinutes="
+				+ timeUsedInMinutes + "]";
 	}
 
 }

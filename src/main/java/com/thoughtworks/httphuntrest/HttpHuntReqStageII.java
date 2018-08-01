@@ -2,7 +2,7 @@ package com.thoughtworks.httphuntrest;
 
 public class HttpHuntReqStageII {
 
-	String[] toolsFound;
+	public String[] toolsFound;
 
 	public String[] getToolsFound() {
 		return toolsFound;

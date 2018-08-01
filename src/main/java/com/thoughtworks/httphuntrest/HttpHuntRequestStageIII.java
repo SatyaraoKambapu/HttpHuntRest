@@ -1,8 +1,10 @@
 package com.thoughtworks.httphuntrest;
 
+import java.util.Arrays;
+
 public class HttpHuntRequestStageIII {
 
-	HttpHuntReqSubStageIII[] toolsSortedOnUsage;
+	public HttpHuntReqSubStageIII[] toolsSortedOnUsage;
 
 	public HttpHuntReqSubStageIII[] getToolsSortedOnUsage() {
 		return toolsSortedOnUsage;
@@ -11,6 +13,12 @@ public class HttpHuntRequestStageIII {
 	public void setToolsSortedOnUsage(
 			HttpHuntReqSubStageIII[] toolsSortedOnUsage) {
 		this.toolsSortedOnUsage = toolsSortedOnUsage;
+	}
+
+	@Override
+	public String toString() {
+		return "HttpHuntRequestStageIII [toolsSortedOnUsage="
+				+ Arrays.toString(toolsSortedOnUsage) + "]";
 	}
 
 }

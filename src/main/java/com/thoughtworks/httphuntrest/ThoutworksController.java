@@ -1,12 +1,8 @@
 package com.thoughtworks.httphuntrest;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
@@ -97,52 +95,18 @@ public class ThoutworksController {
 		return responseJson.getBody().getToolsFound();
 	}
 
-	@SuppressWarnings("deprecation")
-	@PostMapping(value = "/output")
+	@PostMapping(value = "/output/3")
 	public HttpHuntReqSubStageIII[] getChallengeStage3output(
 			@RequestHeader HttpHeaders headers) throws Exception {
 		ResponseEntity<String> response = getChallengeInput(headers);
-		JSONObject obj = new JSONObject(response.getBody());
-		JSONArray array = obj.getJSONArray("toolUsage");
-		Map<String, Integer> resultMap = new HashMap<>();
-		for (Object object : array) {
-			JSONObject jsonObject = (JSONObject) object;
-			Map<String, Object> map = jsonObject.toMap();
-			String name = (String) map.get("name");
-			String useStartTime = (String) map.get("useStartTime");
-			String useEndTime = (String) map.get("useEndTime");
-			String pattern = "yyyy-MM-dd HH:mm:ss";
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-			Date startDate = simpleDateFormat.parse(useStartTime);
-			Date endDate = simpleDateFormat.parse(useEndTime);
-			int timeUsedInMinutes = endDate.getMinutes()
-					- startDate.getMinutes();
-			if (resultMap.containsKey(name)) {
-				int usedTimes = (int) resultMap.get(name);
-				resultMap.put(name, ++usedTimes);
-			} else {
-				resultMap.put(name, timeUsedInMinutes);
-			}
-		}
-		HttpHuntRequestStageIII requestStageIII = new HttpHuntRequestStageIII();
-		List<HttpHuntReqSubStageIII> list = new ArrayList<HttpHuntReqSubStageIII>();
-		for (Entry<String, Integer> entry : resultMap.entrySet()) {
-			if (entry.getValue() > 0) {
-				HttpHuntReqSubStageIII subStageIII = new HttpHuntReqSubStageIII();
-				subStageIII.setName(entry.getKey());
-				subStageIII.setTimeUsedInMinutes(entry.getValue());
-				list.add(subStageIII);
-			}
-		}
-		HttpHuntReqSubStageIII[] reqSubStageIIIArray = new HttpHuntReqSubStageIII[list
-				.size()];
-		int index = 0;
-		for (HttpHuntReqSubStageIII httpHuntReqSubStageIII : list) {
-			reqSubStageIIIArray[index++] = httpHuntReqSubStageIII;
-		}
-		requestStageIII.setToolsSortedOnUsage(reqSubStageIIIArray);
-		System.out.println(reqSubStageIIIArray);
+		System.out.println("<response>" + response);
+
+		HttpHuntRequestStageIII requestStageIII = TimerUtil
+				.getHttpHuntRequest(response.getBody());
 		String uri = URL + "/output";
+		ObjectMapper mapper = new ObjectMapper();
+		String json = mapper.writeValueAsString(requestStageIII);
+		System.out.println("<requestStageIII-json>" + json);
 
 		HttpEntity<HttpHuntRequestStageIII> entity = new HttpEntity<HttpHuntRequestStageIII>(
 				requestStageIII, headers);
@@ -150,4 +114,44 @@ public class ThoutworksController {
 				.postForEntity(uri, entity, HttpHuntRequestStageIII.class);
 		return responseJson.getBody().getToolsSortedOnUsage();
 	}
+
+	@PostMapping(value = "/output")
+	public String[] getChallengeStage4output(@RequestHeader HttpHeaders headers)
+			throws Exception {
+		ResponseEntity<String> response = getChallengeInput(headers);
+		System.out.println("<response>" + response);
+		JSONObject obj = new JSONObject(response.getBody());
+		List<Tool> tools = getTools(obj);
+		int max_weight = obj.getInt("maximumWeight");
+		ToolsSelector.sortToolsByValue(tools);
+		ToolsSelector.sortToolsByWeight(tools);
+		List<Tool> toolsSelected = ToolsSelector.selectTools(tools, max_weight);
+		ToolsSelector.sortToolsByValue(toolsSelected);
+		String[] names = ToolsSelector.sortedToolNames(toolsSelected);
+		HttpHuntRequestStageIV requestStageIV = new HttpHuntRequestStageIV();
+		requestStageIV.setToolsToTakeSorted(names);
+		String uri = URL + "/output";
+		System.out.println("<requestStageIV>" + requestStageIV);
+		HttpEntity<HttpHuntRequestStageIV> entity = new HttpEntity<HttpHuntRequestStageIV>(
+				requestStageIV, headers);
+		ResponseEntity<HttpHuntRequestStageIV> responseJson = restTemplate
+				.postForEntity(uri, entity, HttpHuntRequestStageIV.class);
+		return responseJson.getBody().getToolsToTakeSorted();
+	}
+
+	private List<Tool> getTools(JSONObject obj) {
+		JSONArray array = obj.getJSONArray("tools");
+		List<Tool> tools = new ArrayList<Tool>();
+		for (Object object : array) {
+			JSONObject jsonObj = (JSONObject) object;
+			Map<String, Object> map = jsonObj.toMap();
+			Tool tool = new Tool();
+			tool.setName((String) map.get("name"));
+			tool.setWeight((Integer) map.get("weight"));
+			tool.setValue((Integer) map.get("value"));
+			tools.add(tool);
+		}
+		return tools;
+	}
+
 }
