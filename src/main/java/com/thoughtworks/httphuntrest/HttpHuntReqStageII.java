@@ -1,5 +1,10 @@
 package com.thoughtworks.httphuntrest;
 
+/**
+ * Input Request for Stage2 in the Game.
+ * @author skambapu
+ *
+ */
 public class HttpHuntReqStageII {
 
 	public String[] toolsFound;

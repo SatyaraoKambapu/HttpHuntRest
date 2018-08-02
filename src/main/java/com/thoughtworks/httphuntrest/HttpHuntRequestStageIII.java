@@ -2,6 +2,12 @@ package com.thoughtworks.httphuntrest;
 
 import java.util.Arrays;
 
+/**
+ * Input Request for Stage3 in the Game.
+ * 
+ * @author skambapu
+ * 
+ */
 public class HttpHuntRequestStageIII {
 
 	public HttpHuntReqSubStageIII[] toolsSortedOnUsage;

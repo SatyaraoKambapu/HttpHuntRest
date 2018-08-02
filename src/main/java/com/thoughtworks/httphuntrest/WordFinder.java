@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class WordFinder {
 
@@ -16,7 +15,6 @@ public class WordFinder {
 			int index = 0;
 			int count = 0;
 			for (char c : charArray) {
-				char[] charsInInputStr = msg.toCharArray();
 				int firstCharIndex = msg.indexOf(str.charAt(index));
 				if (firstCharIndex == -1) {
 

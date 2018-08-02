@@ -1,5 +1,11 @@
 package com.thoughtworks.httphuntrest;
 
+/**
+ * Decode the encoded message, which we get it from server.
+ * 
+ * @author skambapu
+ * 
+ */
 public class Encryption {
 
 	public String encrypt(String msg, int key) {

@@ -1,5 +1,10 @@
 package com.thoughtworks.httphuntrest;
 
+/**
+ * Input Sub Request for Stage3 in the Game.
+ * @author skambapu
+ *
+ */
 public class HttpHuntReqSubStageIII {
 
 	public String name;
