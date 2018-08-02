@@ -1,12 +1,17 @@
 package com.thoughtworks.httphuntrest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.thoughtworks.httphuntrest.comparators.ToolValueComparator;
+import com.thoughtworks.httphuntrest.comparators.ToolWeightComparator;
+import com.thoughtworks.httphuntrest.comparators.ToolsChainedComparator;
 
 public class ToolsSelectorTest {
 
@@ -30,22 +35,21 @@ public class ToolsSelectorTest {
 		tools.add(t2);
 		Tool t3 = new Tool();
 		t3.setName("rope");
-		t3.setWeight(10);
-		t3.setValue(60);
+		t3.setWeight(8);
+		t3.setValue(600);
 		tools.add(t3);
 		Tool t4 = new Tool();
 		t4.setName("water");
 		t4.setWeight(8);
-		t4.setValue(40);
+		t4.setValue(700);
 		tools.add(t4);
-		ToolsSelector.sortToolsByValue(tools);
-		ToolsSelector.sortToolsByWeight(tools);
+		Collections.sort(tools, new ToolsChainedComparator(
+				new ToolValueComparator(), new ToolWeightComparator()));
 		List<Tool> toolsSelected = ToolsSelector.selectTools(tools, 15);
-		ToolsSelector.sortToolsByValue(toolsSelected);
 		String[] names = ToolsSelector.sortedToolNames(toolsSelected);
-		Assert.assertEquals("guns", names[0]);
-		Assert.assertEquals("knife", names[1]);
-		Assert.assertEquals("water", names[2]);
+		Assert.assertEquals("water", names[0]);
+		Assert.assertEquals("guns", names[1]);
+		Assert.assertEquals("knife", names[2]);
 	}
 
 }

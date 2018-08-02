@@ -1,6 +1,7 @@
 package com.thoughtworks.httphuntrest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.httphuntrest.comparators.ToolValueComparator;
+import com.thoughtworks.httphuntrest.comparators.ToolWeightComparator;
+import com.thoughtworks.httphuntrest.comparators.ToolsChainedComparator;
 
 /**
  * 
@@ -123,10 +127,9 @@ public class ThoutworksController {
 		JSONObject obj = new JSONObject(response.getBody());
 		List<Tool> tools = getTools(obj);
 		int max_weight = obj.getInt("maximumWeight");
-		ToolsSelector.sortToolsByValue(tools);
-		ToolsSelector.sortToolsByWeight(tools);
+		Collections.sort(tools, new ToolsChainedComparator(new ToolValueComparator(),
+				new ToolWeightComparator()));
 		List<Tool> toolsSelected = ToolsSelector.selectTools(tools, max_weight);
-		ToolsSelector.sortToolsByValue(toolsSelected);
 		String[] names = ToolsSelector.sortedToolNames(toolsSelected);
 		HttpHuntRequestStageIV requestStageIV = new HttpHuntRequestStageIV();
 		requestStageIV.setToolsToTakeSorted(names);
